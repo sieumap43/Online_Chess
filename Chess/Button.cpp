@@ -151,7 +151,34 @@ void Back_Button::render(){
 }
 
 //-----------------------------------------------------------------------------//
+LAN_Button::LAN_Button() {
+	x = 0;
+	y = 0;
+	width = button_texture.getWidth();
+	height = button_texture.getHeight() / 3;
+	click = false;
+}
 
+LAN_Button::~LAN_Button() {}
+
+void LAN_Button::handleEvent(SDL_Event &e) {
+	if (e.type == SDL_MOUSEMOTION) {
+		int a, b;
+		SDL_GetMouseState(&a, &b);
+		if (a <= x || a >= (x + width) || b <= y || b >= (y + height)) {	//mouse is outside the button
+			click = false;
+			return;
+		}
+		click = true;
+	}
+	else if (e.type == SDL_MOUSEBUTTONDOWN) {
+		int a, b;
+		SDL_GetMouseState(&a, &b);
+		if (a > x && a<(x + width) && b>y && b < (y + height)) {	//mouse clicks on the button
+			nextState = STATE_LAN_OPTION;
+		}
+	}
+}
 //-----------------------------------------------------------------------------//
 
 Server_Button::Server_Button() {

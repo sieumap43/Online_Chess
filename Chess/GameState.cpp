@@ -21,6 +21,9 @@ void change_state(){
 			case STATE_PVP_BOARD:
 				currentState = new PvP_Board();
 				break;
+			case STATE_LAN_OPTION:
+				currentState = new LAN_Option();
+				break;
 			case STATE_AI_BOARD:
 				currentState = new AI_Board();
 				break;
@@ -42,15 +45,17 @@ void change_state(){
 //------------------------------------------------------------------------------------//
 
 Intro::Intro(){
-		/*pvp_button = new PvP_Button();
-		ai_button = new AI_Button();*/
-		pvp_button = new Server_Button();
-		ai_button = new Client_Button();
+		pvp_button = new PvP_Button();
+		ai_button = new AI_Button();
+		lan_button = new LAN_Button();
+		/*pvp_button = new Server_Button();
+		ai_button = new Client_Button();*/
 		quit_button = new Quit_Button();
 
 		int X = ( SCREEN_WIDTH - pvp_button->getWidth() )/2;
 		int Y = ( SCREEN_HEIGHT - pvp_button->getHeight() )/2;
-		pvp_button->setPos(X, Y - 64);	
+		pvp_button->setPos(X, Y - 64);
+		lan_button->setPos(X, Y);
 		ai_button->setPos(X, Y + 64);	
 		quit_button->setPos(X, Y + 192);					
 }
@@ -58,12 +63,14 @@ Intro::Intro(){
 Intro::~Intro(){
 	delete pvp_button; pvp_button = NULL;
 	delete ai_button; ai_button = NULL;
+	delete lan_button; lan_button = NULL;
 	delete quit_button; quit_button = NULL;
 }
 
 void Intro::handleEvent(SDL_Event &e){
 	pvp_button->handleEvent(e);
 	ai_button->handleEvent(e);
+	lan_button->handleEvent(e);
 	quit_button->handleEvent(e);
 }
 
@@ -77,11 +84,15 @@ void Intro::render(){
 	pvp_text.render(X, Y);
 
 	ai_button->render();
-	ai_button->render();
 	X = ai_button->getX() + ( ai_button->getWidth() - pvc_text.getWidth() )/2;
 	Y = ai_button->getY() + ( ai_button->getHeight() - pvc_text.getHeight() )/2;
 	pvc_text.render(X, Y);	
-	
+
+	lan_button->render();
+	X = lan_button->getX() + (lan_button->getWidth() - lan_text.getWidth()) / 2;
+	Y = lan_button->getY() + (lan_button->getHeight() - lan_text.getHeight()) / 2;
+	lan_text.render(X, Y);
+
 	quit_button->render();
 	X = quit_button->getX() + ( quit_button->getWidth() - quit_text.getWidth() )/2;
 	Y = quit_button->getY() + ( quit_button->getHeight() - quit_text.getHeight() )/2;		
@@ -238,6 +249,46 @@ void AI_Board::render(){
 	back_button->render();
 }
 
+/*------------------------------------------------------*/
+LAN_Option::LAN_Option() {
+	join_game_button = new Client_Button();
+	host_game_button = new Server_Button();
+	back_button = new Back_Button();
+
+	int X = (SCREEN_WIDTH - join_game_button->getWidth()) / 2;
+	int Y = (SCREEN_HEIGHT - join_game_button->getHeight()) / 2;
+	join_game_button->setPos(X, Y - 64);	//game options at the
+	host_game_button->setPos(X, Y + 64);	//center of the screen
+	back_button->setPos(0, 0);	//back button corner of the screen
+
+}
+
+LAN_Option::~LAN_Option() {
+	delete join_game_button; join_game_button = NULL;
+	delete host_game_button; host_game_button = NULL;
+	delete back_button; back_button = NULL;
+}
+
+void LAN_Option::handleEvent(SDL_Event &e) {
+	join_game_button->handleEvent(e);
+	host_game_button->handleEvent(e);
+	back_button->handleEvent(e);
+}
+
+void LAN_Option::update() {}
+void LAN_Option::render() {
+	join_game_button->render();
+	int X = join_game_button->getX() + (join_game_button->getWidth() - join_game_text.getWidth()) / 2;
+	int Y = join_game_button->getY() + (join_game_button->getHeight() - join_game_text.getHeight()) / 2;
+	join_game_text.render(X, Y);
+
+	host_game_button->render();
+	X = host_game_button->getX() + (host_game_button->getWidth() - host_game_text.getWidth()) / 2;
+	Y = host_game_button->getY() + (host_game_button->getHeight() - host_game_text.getHeight()) / 2;
+	host_game_text.render(X, Y);
+
+	back_button->render();
+}
 /*------------------------------------------------------*/
 Server_Board::Server_Board() {
 	just_moved_pawn_x = -1;

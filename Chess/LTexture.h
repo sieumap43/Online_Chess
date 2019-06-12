@@ -32,6 +32,9 @@ extern LTexture title_texture;
 extern LTexture button_texture;
 extern LTexture pvp_text;
 extern LTexture pvc_text;
+extern LTexture lan_text;
+extern LTexture join_game_text;
+extern LTexture host_game_text;
 extern LTexture quit_text;
 
 extern LTexture sprite_sheet_texture;

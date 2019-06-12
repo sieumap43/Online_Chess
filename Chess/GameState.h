@@ -33,6 +33,7 @@ class Intro:public GameState{
 	private:
 		Button* pvp_button;
 		Button* ai_button;
+		Button* lan_button;
 		Button* quit_button;
 		
 };
@@ -67,6 +68,19 @@ class AI_Board:public GameState{
 		GIF* white_won_text;
 		GIF* draw_text;
 };	
+
+class LAN_Option :public GameState {
+public:
+	LAN_Option();
+	~LAN_Option();
+	void handleEvent(SDL_Event &e);
+	void update();
+	void render();
+private:
+	Client_Button* join_game_button;
+	Server_Button* host_game_button;
+	Back_Button* back_button;
+};
 
 class Server_Board :public GameState {
 public:

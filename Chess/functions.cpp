@@ -94,6 +94,18 @@ bool loadMedia(){
 		printf("Failed to load pvc text!\n");
 		success = false;
 	}
+	if (!lan_text.loadFromFile("image/lan.png")) {
+		printf("Failed to load lan text!\n");
+		success = false;
+	}
+	if (!host_game_text.loadFromFile("image/host_game.png")) {
+		printf("Failed to load host_game text!\n");
+		success = false;
+	}
+	if (!join_game_text.loadFromFile("image/join_game.png")) {
+		printf("Failed to load join_game text!\n");
+		success = false;
+	}
 	if( !quit_text.loadFromFile("image/quit.png") ){
 		printf("Failed to load quit text!\n");
 		success = false;
@@ -123,6 +135,10 @@ void close(){
 	button_texture.free();
 	title_texture.free();
 	pvp_text.free();
+	pvc_text.free();
+	lan_text.free();
+	join_game_text.free();
+	host_game_text.free();
 	quit_text.free();
 			
 	sprite_sheet_texture.free();

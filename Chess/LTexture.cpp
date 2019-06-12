@@ -5,6 +5,9 @@ LTexture title_texture;
 LTexture button_texture;
 LTexture pvp_text;
 LTexture pvc_text;
+LTexture lan_text;
+LTexture join_game_text;
+LTexture host_game_text;
 LTexture quit_text;
 
 LTexture sprite_sheet_texture;

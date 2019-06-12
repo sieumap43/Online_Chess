@@ -45,6 +45,13 @@ class AI_Button:public Button{
 		void handleEvent(SDL_Event &e);
 };
 
+class LAN_Button :public Button {
+public:
+	LAN_Button();
+	~LAN_Button();
+	void handleEvent(SDL_Event &e);
+};
+
 class Client_Button :public Button {
 public:
 	Client_Button();
