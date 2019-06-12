@@ -23,13 +23,13 @@
     <ProjectGuid>{DC8D1682-A4CA-49DB-888D-855FC86CAF7A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Chess</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -90,12 +90,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2-2.0.8\include;C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2_ttf-2.0.14\include;C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2_image-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2-2.0.8\include;D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2_ttf-2.0.14\include;D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2_image-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2-2.0.8\lib\x86;C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2_ttf-2.0.14\lib\x86;C:\Users\quynh\OneDrive - student.vgu.edu.vn\Fund. of Telecom project\Online_Chess\Chess\SDL2_image-2.0.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2-2.0.8\lib\x86;D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2_ttf-2.0.14\lib\x86;D:\3rd Year\Telecommunications\Online_Chess_v2\SDL2_image-2.0.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
