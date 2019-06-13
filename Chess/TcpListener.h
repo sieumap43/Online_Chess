@@ -8,18 +8,18 @@
 
 class Server_Chess;
 #define MAX_BUFFER_SIZE (49152)
-class CTcpServer;
+class TcpServer;
 //TODO: Callback to data received
 typedef void(*MessageReceivedHandler)(Server_Chess* Server_ptr, int socketID, std::string msg);
 
 
-class CTcpServer
+class TcpServer
 {
 public:
-	CTcpServer(std::string ipAddress, int port, MessageReceivedHandler handler, Server_Chess* Server_ptr);
-	CTcpServer() {}
-	CTcpServer(std::string ipAddress, int port) :m_ipAddress(ipAddress), m_port(port) {}
-	~CTcpServer();
+	TcpServer(std::string ipAddress, int port, MessageReceivedHandler handler, Server_Chess* Server_ptr);
+	TcpServer() {}
+	TcpServer(std::string ipAddress, int port) :m_ipAddress(ipAddress), m_port(port) {}
+	~TcpServer();
 	//Send message to specified client
 	void Send(int clientSocket, std::string msg);
 	//Initiallize winsock

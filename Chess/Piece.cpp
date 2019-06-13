@@ -4,7 +4,7 @@
 #include "Piece.h"
 #include "constants.h"
 using namespace std;
-std::string MessageToBeSent;
+
 Piece::Piece(bool is_white){
 	isWhite = is_white;
 	x = 8*size;
@@ -60,14 +60,14 @@ void Piece::handleEvent(SDL_Event &e, Chess_Frame* all){
 			int a,b;
 			SDL_GetMouseState(&a, &b);
 			all->board[(toX - Ox)/64][(toY - Oy)/64]->stop_glowing_green();			
-			if (this->initiate_move_to(a, b, all))
-			{
+			if (this->initiate_move_to(a, b, all)) change_turn = true;
+/*			{
 				change_turn = true;
 				if (is_online) {
 					MessageHandler temp;
 					MessageToBeSent = temp.encode(this->x_index, this->y_index, a, b);
 				}
-			}
+			}*/
 			mouse_pressing = true;
 			chosen = true;
 			all->playing = true;
@@ -93,6 +93,10 @@ void Piece::handleEvent(SDL_Event &e, Chess_Frame* all){
 				all->player1_turn = !all->player1_turn;		//change player's turn
 				change_turn = false;
 				all->change_turn = true;
+				all->played_piece_toX = toX;
+				all->played_piece_toY = toY;
+				all->played_piece_x_index = x_index;
+				all->played_piece_y_index = y_index;
 			}
 			all->check_path->clear(); //clear path to make the next move
 		}				

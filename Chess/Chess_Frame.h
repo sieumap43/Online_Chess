@@ -7,13 +7,19 @@
 #include "Promote_options.h"
 #include "pMoves.h"
 #include "Process_Moves.h"
+#include <string>
+
+/*************************************************
+	Online Libraries
+*************************************************/
+#include "MessageHandler.h"
 #include "TcpClient.h"
 #include "TcpListener.h"
-#include "MessageHandler.h"
-#include <string>
-//std::string MessageToBeSent;
+extern std::string MessageToBeSent;
+class MessageHandler;
+
 class Piece;
-class CTcpServer;
+class TcpServer;
 class TcpClient;
 class Server_Chess;
 class Chess_Frame{
@@ -28,7 +34,12 @@ class Chess_Frame{
 		bool change_turn;	//determine if there is a change turn
 		bool check_mate;	//announce checkmate
 		bool draw_game;		//announce draw
-		
+
+		int played_piece_x_index = -1;
+		int played_piece_y_index = -1;
+		int played_piece_toX = -1;
+		int played_piece_toY = -1;
+
 		Piece* army[2][16];	//array of 32 pointers to 32 piece instances
 		Square* board[8][8];//array of 64 pointers to 64 square instances
 		Path* check_path;	//pointer to an array that marks the checking path
@@ -66,13 +77,16 @@ class AI_Chess:public Chess_Frame{
 		void render();
 		void promote_pawn(int piece_type);		
 };
-void Listener_handle(Server_Chess* Server_ptr, int client, string msg);
+void Server_handle(Server_Chess* Server_ptr, int client, string msg);
 class Server_Chess : public Chess_Frame
 {
+private:
+	bool has_first_turn;
+	int row_index;
 public:
 	Server_Chess();
 	~Server_Chess();
-	CTcpServer* server;
+	TcpServer* server;
 	MessageHandler msg_handler;
 	
 	void handleEvent(SDL_Event &e);
@@ -80,6 +94,9 @@ public:
 
 class Client_Chess : public Chess_Frame
 {
+private:
+	bool has_first_turn;
+	int row_index;
 public:
 	Client_Chess();
 	~Client_Chess();

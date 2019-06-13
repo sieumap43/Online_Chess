@@ -10,11 +10,7 @@
 #include "WasteBasket.h"
 #include "Chess_Frame.h"
 #include "globals.h"
-#include "MessageHandler.h"
 
-extern std::string MessageToBeSent;
-
-class MessageHandler;
 class Chess_Frame;
 class Piece{
 	protected:
@@ -33,7 +29,7 @@ class Piece{
 		int piecevalue = 0;	
 		bool isWhite;			//show the piece's color
 		bool first_move = true;	//show if the piece has moved for the first time
-		bool is_online = false;
+//		bool is_online = false;
 		Piece(bool is_white);
 		virtual ~Piece();
 		int getX();

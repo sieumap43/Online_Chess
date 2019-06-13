@@ -1,22 +1,22 @@
 #include "TcpListener.h"
 #include <sstream> 
 
-CTcpServer::CTcpServer(std::string ipAddress, int port, MessageReceivedHandler handler, Server_Chess* Server_ptr)
+TcpServer::TcpServer(std::string ipAddress, int port, MessageReceivedHandler handler, Server_Chess* Server_ptr)
 	: m_ipAddress(ipAddress), m_port(port), MessageReceived(handler), Server_ptr(Server_ptr)
 {
 
 }
-CTcpServer::~CTcpServer()
+TcpServer::~TcpServer()
 {
 	Cleanup();
 }
 //Send message to specified client
-void CTcpServer::Send(int clientSocket, std::string msg)
+void TcpServer::Send(int clientSocket, std::string msg)
 {
 	send(clientSocket, msg.c_str(), msg.size()+1, 0);
 }
 //Initiallize winsock
-bool CTcpServer::Init()
+bool TcpServer::Init()
 {
 	WSAData data;
 	WORD ver = MAKEWORD(2, 2);
@@ -24,7 +24,7 @@ bool CTcpServer::Init()
 	//TODO: Inform caller that the error that occured 
 	return wsInit == 0;
 }
-void CTcpServer::Connecting()
+void TcpServer::Connecting()
 {
 
 	SOCKET listening = CreateSocket();
@@ -42,7 +42,7 @@ void CTcpServer::Connecting()
 	return;
 }
 //The Main processing Loop
-void CTcpServer::Run()
+void TcpServer::Run()
 {
 	char buf[MAX_BUFFER_SIZE];
 	int bytesReceived = 0;
@@ -59,7 +59,7 @@ void CTcpServer::Run()
 		//Loop receive/send 
 }
 
-bool CTcpServer::RunNB() //Non Blocking Running
+bool TcpServer::RunNB() //Non Blocking Running
 {
 	char buf[MAX_BUFFER_SIZE];
 	int bytesReceived = 0;
@@ -75,13 +75,13 @@ bool CTcpServer::RunNB() //Non Blocking Running
 	}
 	return false;
 }
-void CTcpServer::Cleanup()
+void TcpServer::Cleanup()
 {
 	closesocket(client);
 	WSACleanup();
 }
 
-SOCKET CTcpServer::CreateSocket()
+SOCKET TcpServer::CreateSocket()
 {
 	SOCKET listening = socket(AF_INET, SOCK_STREAM, 0);
 	if (listening != INVALID_SOCKET)
@@ -110,7 +110,7 @@ SOCKET CTcpServer::CreateSocket()
 }
 
 //Wait for a connection
-SOCKET CTcpServer::WaitForConnection(SOCKET listening)
+SOCKET TcpServer::WaitForConnection(SOCKET listening)
 {
 	SOCKET client = accept(listening, NULL, NULL);
 	return client;
