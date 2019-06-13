@@ -35,6 +35,8 @@ class Chess_Frame{
 		bool check_mate;	//announce checkmate
 		bool draw_game;		//announce draw
 
+		bool has_first_turn;
+		int row_index;
 		int played_piece_x_index = -1;
 		int played_piece_y_index = -1;
 		int played_piece_toX = -1;
@@ -80,9 +82,6 @@ class AI_Chess:public Chess_Frame{
 void Server_handle(Server_Chess* Server_ptr, int client, string msg);
 class Server_Chess : public Chess_Frame
 {
-private:
-	bool has_first_turn;
-	int row_index;
 public:
 	Server_Chess();
 	~Server_Chess();
@@ -94,9 +93,6 @@ public:
 
 class Client_Chess : public Chess_Frame
 {
-private:
-	bool has_first_turn;
-	int row_index;
 public:
 	Client_Chess();
 	~Client_Chess();

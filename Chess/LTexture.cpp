@@ -3,6 +3,9 @@
 LTexture background;
 LTexture title_texture;
 LTexture button_texture;
+LTexture your_turn_text;
+LTexture their_turn_text;
+
 LTexture pvp_text;
 LTexture pvc_text;
 LTexture lan_text;

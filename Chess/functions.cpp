@@ -86,6 +86,14 @@ bool loadMedia(){
 		printf("Failed to load title texture!\n");
 		success = false;
 	}
+	if (!your_turn_text.loadFromFile("image/your_turn.png")) {
+		printf("Failed to load your_turn_text!\n");
+		success = false;
+	}
+	if (!their_turn_text.loadFromFile("image/their_turn.png")) {
+		printf("Failed to load their_turn_text!\n");
+		success = false;
+	}
 	if( !pvp_text.loadFromFile("image/pvp.png") ){
 		printf("Failed to load pvp text!\n");
 		success = false;
@@ -134,6 +142,8 @@ void close(){
 	background.free();
 	button_texture.free();
 	title_texture.free();
+	your_turn_text.free();
+	their_turn_text.free();
 	pvp_text.free();
 	pvc_text.free();
 	lan_text.free();

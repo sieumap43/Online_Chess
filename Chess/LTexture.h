@@ -30,6 +30,8 @@ class LTexture{		//an object that holds images
 extern LTexture background;
 extern LTexture title_texture;
 extern LTexture button_texture;
+extern LTexture your_turn_text;
+extern LTexture their_turn_text;
 extern LTexture pvp_text;
 extern LTexture pvc_text;
 extern LTexture lan_text;

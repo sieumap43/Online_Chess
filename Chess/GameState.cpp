@@ -324,7 +324,6 @@ Server_Board::~Server_Board() {
 void Server_Board::handleEvent(SDL_Event &e) {
 	all->handleEvent(e);
 	back_button->handleEvent(e);
-
 	if (all->check_mate) {
 		if (!all->player1_turn) white_won_text->show_gif();
 		else black_won_text->show_gif();
@@ -346,9 +345,19 @@ void Server_Board::render() {
 	draw_board();
 	all->render();
 
-	white_won_text->render();
-	black_won_text->render();
-	draw_text->render();
+	if (all->check_mate || all->draw_game) {
+		white_won_text->render();
+		black_won_text->render();
+		draw_text->render();
+	}
+	else {
+		if (all->player1_turn == all->has_first_turn) {
+			your_turn_text.render(256, 0);
+		}
+		else {
+			their_turn_text.render(256, 0);
+		}
+	}
 
 	back_button->render();
 }
@@ -409,10 +418,20 @@ void Client_Board::update() {
 void Client_Board::render() {
 	draw_board();
 	all->render();
-
-	white_won_text->render();
-	black_won_text->render();
-	draw_text->render();
+	
+	if (all->check_mate || all->draw_game) {
+		white_won_text->render();
+		black_won_text->render();
+		draw_text->render();
+	}
+	else {
+		if (all->player1_turn == all->has_first_turn) {
+			your_turn_text.render(256, 0);
+		}
+		else {
+			their_turn_text.render(256, 0);
+		}
+	}
 
 	back_button->render();
 }
