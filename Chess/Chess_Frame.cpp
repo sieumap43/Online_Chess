@@ -437,7 +437,7 @@ void Server_handle(Server_Chess* Server_ptr, int client, string msg)
 Server_Chess::Server_Chess() :Chess_Frame() {
 	server = new TcpServer("127.0.0.1", 54000, Server_handle, this);
 	if (server->Init()) { 
-		server->Connecting(); 
+		server->ConnectingWithThread();
 	}
 	has_first_turn = true;
 	if (has_first_turn) row_index = 0;
@@ -448,98 +448,94 @@ Server_Chess::~Server_Chess() {
 
 void Server_Chess::handleEvent(SDL_Event &e)
 {
-/*	if (!player1_turn && server->RunNB())
+	if (!server->WaitingForClient)
 	{
-		player1_turn = true;
-	}*/
-	int piece_type = 0;
-	if (!promoting_pawn) {	//if there is no pawn promotion, the game goes on as normal
-		if (player1_turn == has_first_turn) {
-			cout << "Playing " << endl;
-			for (int j = 0; j < 16; j++) 
-				army[0][j]->handleEvent(e, this);
+		int piece_type = 0;
+		if (!promoting_pawn) {	//if there is no pawn promotion, the game goes on as normal
+			if (player1_turn == has_first_turn) {
+				cout << "Playing " << endl;
+				for (int j = 0; j < 16; j++)
+					army[0][j]->handleEvent(e, this);
+			}
+			else {
+				cout << "Listening" << endl;
+				if (server->RunNB()) {
+					if (enemy_promoting_flag == 0) {	//No promotion
+						army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+					}
+					else {
+						army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+						promote_pawn(enemy_promoting_flag);
+					}
+					played_piece_x_index = -1;	//reset listening variables and flags
+					played_piece_y_index = -1;
+					played_piece_toX = -1;
+					played_piece_toY = -1;
+					enemy_promoting_flag = 0;
+					player1_turn = has_first_turn;	//opponent officially finished his turn
+				}
+				else return;
+			}
 		}
-		else {
-			cout << "Listening" << endl;
-			if (server->RunNB()) {
-				if (enemy_promoting_flag == 0) {	//No promotion
-					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
-				}
-				else {
-					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
-					promote_pawn(enemy_promoting_flag);
-				}
-				played_piece_x_index = -1;	//reset listening variables and flags
+		else {		//if there is a pawn promotion, stop the game until the player decided which piece it is promoted to
+			prom_menu->handleEvent(e, piece_type);
+			if (piece_type != 0) change_turn = true;
+		}
+
+		if (change_turn) {
+			change_turn = false;	//reset change_turn
+			if (piece_type != 0) {	//if the player has chosen a pawn promotion
+
+				promote_pawn(piece_type);	//pass the option to the function
+
+				MessageHandler temp;	//send promotion choice
+				MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, piece_type);
+				server->Send(server->client, MessageToBeSent);
+				played_piece_x_index = -1;
 				played_piece_y_index = -1;
 				played_piece_toX = -1;
 				played_piece_toY = -1;
-				enemy_promoting_flag = 0;
-				player1_turn = has_first_turn;	//opponent officially finished his turn
+
+				piece_type = 0;				//reset the option
+				promoting_pawn = false;		//reset the promotion signals
 			}
-			else return;
-		}
-	}
-	else {		//if there is a pawn promotion, stop the game until the player decided which piece it is promoted to
-		prom_menu->handleEvent(e, piece_type);
-		if (piece_type != 0) change_turn = true;
-	}
-
-	if (change_turn) {
-		change_turn = false;	//reset change_turn
-		if (piece_type != 0) {	//if the player has chosen a pawn promotion
-
-			promote_pawn(piece_type);	//pass the option to the function
-
-			MessageHandler temp;	//send promotion choice
-			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, piece_type);
-			server->Send(server->client, MessageToBeSent);
-			played_piece_x_index = -1;
-			played_piece_y_index = -1;
-			played_piece_toX = -1;
-			played_piece_toY = -1;
-
-			piece_type = 0;				//reset the option
-			promoting_pawn = false;		//reset the promotion signals
-		}
-		if (pawn_promotion_x != -1) {	//if there is a pawn promotion
-			promoting_pawn = true;		//turn on the promotion signal
-			int X = army[pawn_promotion_x][pawn_promotion_y]->getX(); //display prom_menu on the promoted pawn			
-			int Y = army[pawn_promotion_x][pawn_promotion_y]->getY();
-			if (!player1_turn) prom_menu->setPos(X - 30, Y - 34);
-			else prom_menu->setPos(X - 30, Y + 64);
-		}
-		else {
-			MessageHandler temp;
-			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, -1);
-			server->Send(server->client, MessageToBeSent);
-			played_piece_x_index = -1;
-			played_piece_y_index = -1;
-			played_piece_toX = -1;
-			played_piece_toY = -1;
-		}
-		if (is_king_checked(player1_turn)) {
-			int C, D;
-			if (player1_turn) {
-				C = (army[0][15]->getX() - Ox) / 64;
-				D = (army[0][15]->getY() - Oy) / 64;
+			if (pawn_promotion_x != -1) {	//if there is a pawn promotion
+				promoting_pawn = true;		//turn on the promotion signal
+				int X = army[pawn_promotion_x][pawn_promotion_y]->getX(); //display prom_menu on the promoted pawn			
+				int Y = army[pawn_promotion_x][pawn_promotion_y]->getY();
+				if (!player1_turn) prom_menu->setPos(X - 30, Y - 34);
+				else prom_menu->setPos(X - 30, Y + 64);
 			}
 			else {
-				C = (army[1][15]->getX() - Ox) / 64;
-				D = (army[1][15]->getY() - Oy) / 64;
+				MessageHandler temp;
+				MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, -1);
+				server->Send(server->client, MessageToBeSent);
+				played_piece_x_index = -1;
+				played_piece_y_index = -1;
+				played_piece_toX = -1;
+				played_piece_toY = -1;
 			}
-			board[C][D]->glow_red();
-			if (is_checkmate()) cout << "Check mate\n";
+			if (is_king_checked(player1_turn)) {
+				int C, D;
+				if (player1_turn) {
+					C = (army[0][15]->getX() - Ox) / 64;
+					D = (army[0][15]->getY() - Oy) / 64;
+				}
+				else {
+					C = (army[1][15]->getX() - Ox) / 64;
+					D = (army[1][15]->getY() - Oy) / 64;
+				}
+				board[C][D]->glow_red();
+				if (is_checkmate()) cout << "Check mate\n";
+			}
+			else {
+				if (is_draw()) cout << "Stalemate. Draw\n";
+			}
 		}
-		else {
-			if (is_draw()) cout << "Stalemate. Draw\n";
-		}
-/*		if (!player1_turn)
-		{
-			server->Send(server->client,MessageToBeSent);
-			//server->RunNB();
-			/*player1_turn = true;
-			change_turn = true;
-		}*/
+	}
+	else
+	{
+		
 	}
 }
 
@@ -561,10 +557,29 @@ void Client_handle(Client_Chess* Client_ptr, int client, string msg)
 }
 Client_Chess::Client_Chess() :Chess_Frame() {
 	client = new TcpClient("127.0.0.1", 54000, Client_handle, this);
-	if (client->Init()) {
+	/*if (client->Init()) {
 		if (!client->Connecting())
 		{
 			cout << "Failed to connect!Quitting...";
+			nextState = STATE_INTRO;
+		}
+	}*/
+	if (client->Init()) {
+		if (client->serverScanning())
+		{
+			if (client->Connecting())
+			{
+				client->Send(client->server, "101-");
+			}
+			else
+			{
+				cout << "Failed connected";
+				nextState = STATE_INTRO;
+			}
+		}
+		else
+		{
+			cout << "No Server Found";
 			nextState = STATE_INTRO;
 		}
 	}

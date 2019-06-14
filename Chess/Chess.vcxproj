@@ -23,13 +23,13 @@
     <ProjectGuid>{DC8D1682-A4CA-49DB-888D-855FC86CAF7A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Chess</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -168,6 +168,7 @@
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="pMoves.h" />
+    <ClInclude Include="portScanning.h" />
     <ClInclude Include="Process_Moves.h" />
     <ClInclude Include="Promote_options.h" />
     <ClInclude Include="Queen.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="pMoves.cpp" />
+    <ClCompile Include="portScanning.cpp" />
     <ClCompile Include="Process_Moves.cpp" />
     <ClCompile Include="Promote_options.cpp" />
     <ClCompile Include="Queen.cpp" />

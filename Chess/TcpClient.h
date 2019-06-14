@@ -4,13 +4,18 @@
 #include <WS2tcpip.h>
 #include <string>
 #include "Chess_Frame.h"
-#include "TcpServer.h"
 #include "NonBlockingRecv.h"
+#include "portScanning.h"
+#include <vector>
+#include <sstream>
+#include <thread>
+
 #define MAX_BUFFER_SIZE (49152)
 class TcpClient;
 class Client_Chess;
 typedef void(*MessageReceivedHandlerC)(Client_Chess* Client_ptr, int socketID, std::string msg);
-
+static bool port_is_open(std::string ip, int port);
+void task(const std::string& ip, int port, TcpClient* TcpClient);
 class TcpClient 
 {
 public:
@@ -24,6 +29,9 @@ public:
 	void Run();
 	bool RunNB();
 	//Receive Loop
+	//Scanning the Server
+	std::vector<std::string> ipAddresses;
+	bool serverScanning();
 	bool Connecting();
 	//Send back message
 
