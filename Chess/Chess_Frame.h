@@ -83,6 +83,7 @@ void Server_handle(Server_Chess* Server_ptr, int client, string msg);
 class Server_Chess : public Chess_Frame
 {
 public:
+	int enemy_promoting_flag = 0;
 	Server_Chess();
 	~Server_Chess();
 	TcpServer* server;
@@ -94,12 +95,12 @@ public:
 class Client_Chess : public Chess_Frame
 {
 public:
+	int enemy_promoting_flag = 0;
 	Client_Chess();
 	~Client_Chess();
 	TcpClient* client;
 	MessageHandler msg_handler;
 	void handleEvent(SDL_Event &e);
-	bool firstTime;
 };
 
 #endif

@@ -64,7 +64,7 @@ bool TcpClient::RunNB()
 	{
 		if (MessageReceived != NULL)
 		{
-			MessageReceived(client_ptr, server, std::string(buf, 0, bytesReceived));
+			MessageReceived(client_ptr, server, std::string(buf, 0, bytesReceived));	//Invoking Client_handle(...)
 		}
 		return true;
 	}

@@ -69,7 +69,7 @@ bool TcpServer::RunNB() //Non Blocking Running
 	{
 		if (MessageReceived != NULL)
 		{
-			MessageReceived(Server_ptr, client, std::string(buf, 0, bytesReceived));
+			MessageReceived(Server_ptr, client, std::string(buf, 0, bytesReceived));	//Invoking Server_handle(...)
 		}
 		return true;
 	}

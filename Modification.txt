@@ -7,3 +7,8 @@ An:
 - Rename CTcpServer class to TcpServer
 - Delete server object in Server_Chess deconstructor
 - Delete client object in Client_Chess deconstructor
+
+An:
+- Information to sent over the connection:
+	- piece_to_play_x_index, piece_to_play_y_index, toX, toY
+	- pawn_to_promote_x_index, pawn_to_promote_y_index, piece_type, b = -2

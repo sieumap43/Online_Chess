@@ -426,8 +426,13 @@ void Server_handle(Server_Chess* Server_ptr, int client, string msg)
 	int y_index = Server_ptr->msg_handler.recv_y_index;
 	int a = Server_ptr->msg_handler.recv_toPixel_X;
 	int b = Server_ptr->msg_handler.recv_toPixel_Y;
-	cout << x_index << "-" << y_index << "-" << a << "-" << b << endl;
-	Server_ptr->army[x_index][y_index]->initiate_move_to(a, b, Server_ptr);
+	int promoting_pawn = Server_ptr->msg_handler.recv_promoting_flag;
+	cout << x_index << "-" << y_index << "-" << a << "-" << b << "-" <<promoting_pawn << endl;
+	Server_ptr->played_piece_x_index = x_index;
+	Server_ptr->played_piece_y_index = y_index;
+	Server_ptr->played_piece_toX = a;
+	Server_ptr->played_piece_toY = b;
+	Server_ptr->enemy_promoting_flag = promoting_pawn;
 }
 Server_Chess::Server_Chess() :Chess_Frame() {
 	server = new TcpServer("127.0.0.1", 54000, Server_handle, this);
@@ -455,8 +460,23 @@ void Server_Chess::handleEvent(SDL_Event &e)
 				army[0][j]->handleEvent(e, this);
 		}
 		else {
-			cout << "Listening " << endl;
-			if (server->RunNB()) player1_turn = has_first_turn; //Opponent has finished his turn, now it's your turn.
+			cout << "Listening" << endl;
+			if (server->RunNB()) {
+				if (enemy_promoting_flag == 0) {	//No promotion
+					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+				}
+				else {
+					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+					promote_pawn(enemy_promoting_flag);
+				}
+				played_piece_x_index = -1;	//reset listening variables and flags
+				played_piece_y_index = -1;
+				played_piece_toX = -1;
+				played_piece_toY = -1;
+				enemy_promoting_flag = 0;
+				player1_turn = has_first_turn;	//opponent officially finished his turn
+			}
+			else return;
 		}
 	}
 	else {		//if there is a pawn promotion, stop the game until the player decided which piece it is promoted to
@@ -467,7 +487,17 @@ void Server_Chess::handleEvent(SDL_Event &e)
 	if (change_turn) {
 		change_turn = false;	//reset change_turn
 		if (piece_type != 0) {	//if the player has chosen a pawn promotion
+
 			promote_pawn(piece_type);	//pass the option to the function
+
+			MessageHandler temp;	//send promotion choice
+			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, piece_type);
+			server->Send(server->client, MessageToBeSent);
+			played_piece_x_index = -1;
+			played_piece_y_index = -1;
+			played_piece_toX = -1;
+			played_piece_toY = -1;
+
 			piece_type = 0;				//reset the option
 			promoting_pawn = false;		//reset the promotion signals
 		}
@@ -480,7 +510,7 @@ void Server_Chess::handleEvent(SDL_Event &e)
 		}
 		else {
 			MessageHandler temp;
-			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY);
+			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, -1);
 			server->Send(server->client, MessageToBeSent);
 			played_piece_x_index = -1;
 			played_piece_y_index = -1;
@@ -521,25 +551,18 @@ void Client_handle(Client_Chess* Client_ptr, int client, string msg)
 	int y_index = Client_ptr->msg_handler.recv_y_index;
 	int a = Client_ptr->msg_handler.recv_toPixel_X;
 	int b = Client_ptr->msg_handler.recv_toPixel_Y;
-	cout << x_index << "-" << y_index << "-" << a << "-" << b << endl;
-	Client_ptr->army[x_index][y_index]->initiate_move_to(a, b, Client_ptr);
+	int promoting_flag = Client_ptr->msg_handler.recv_promoting_flag;
+	cout << x_index << "-" << y_index << "-" << a << "-" << b << "-" <<promoting_flag << endl;
+	Client_ptr->played_piece_x_index = x_index;
+	Client_ptr->played_piece_y_index = y_index;
+	Client_ptr->played_piece_toX = a;
+	Client_ptr->played_piece_toY = b;
+	Client_ptr->enemy_promoting_flag = promoting_flag;
 }
 Client_Chess::Client_Chess() :Chess_Frame() {
 	client = new TcpClient("127.0.0.1", 54000, Client_handle, this);
 	if (client->Init()) {
-		if (client->Connecting())
-		{
-			//cout << "Connected";
-/*			for (int i = 0; i<2; i++) {
-				for (int j = 0; j<16; j++) {
-					army[i][j]->is_online = true;
-				}
-			}
-			firstTime = true;
-			/*client->Run();
-			player1_turn = false;*/
-		}
-		else
+		if (!client->Connecting())
 		{
 			cout << "Failed to connect!Quitting...";
 			nextState = STATE_INTRO;
@@ -564,7 +587,22 @@ void Client_Chess::handleEvent(SDL_Event &e)
 		}
 		else {
 			cout << "Listening" << endl;
-			if (client->RunNB()) player1_turn = has_first_turn;	//Opponent has finished his turn, now it's your turn.
+			if (client->RunNB()) {
+				if (enemy_promoting_flag == 0) {	//No promotion
+					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+				}
+				else {
+					army[played_piece_x_index][played_piece_y_index]->initiate_move_to(played_piece_toX, played_piece_toY, this);
+					promote_pawn(enemy_promoting_flag);
+				}
+				played_piece_x_index = -1;
+				played_piece_y_index = -1;
+				played_piece_toX = -1;
+				played_piece_toY = -1;
+				enemy_promoting_flag = 0;
+				player1_turn = has_first_turn;
+			}
+			else return;
 		}
 	}
 	else {		//if there is a pawn promotion, stop the game until the player decided which piece it is promoted to
@@ -576,6 +614,16 @@ void Client_Chess::handleEvent(SDL_Event &e)
 		change_turn = false;	//reset change_turn
 		if (piece_type != 0) {	//if the player has chosen a pawn promotion
 			promote_pawn(piece_type);	//pass the option to the function
+
+			MessageHandler temp;
+			cout << played_piece_x_index << endl;
+			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, piece_type);
+			client->Send(client->server, MessageToBeSent);
+			played_piece_x_index = -1;
+			played_piece_y_index = -1;
+			played_piece_toX = -1;
+			played_piece_toY = -1;
+
 			piece_type = 0;				//reset the option
 			promoting_pawn = false;		//reset the promotion signals
 		}
@@ -589,7 +637,7 @@ void Client_Chess::handleEvent(SDL_Event &e)
 		else {
 			MessageHandler temp;
 			cout << played_piece_x_index << endl;
-			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY);
+			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY, -1);
 			client->Send(client->server, MessageToBeSent);
 			played_piece_x_index = -1;
 			played_piece_y_index = -1;
