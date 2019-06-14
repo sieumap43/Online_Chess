@@ -4,7 +4,7 @@
 #include <WS2tcpip.h>
 #include <string>
 #include "Chess_Frame.h"
-#include "TcpListener.h"
+#include "TcpServer.h"
 #include "NonBlockingRecv.h"
 #define MAX_BUFFER_SIZE (49152)
 class TcpClient;

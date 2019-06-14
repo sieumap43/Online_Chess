@@ -176,7 +176,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TcpClient.h" />
-    <ClInclude Include="TcpListener.h" />
+    <ClInclude Include="TcpServer.h" />
     <ClInclude Include="WasteBasket.h" />
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +209,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp" />
-    <ClCompile Include="TcpListener.cpp" />
+    <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="WasteBasket.cpp" />
   </ItemGroup>
   <ItemGroup>

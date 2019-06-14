@@ -13,7 +13,7 @@ King::King(bool is_white):Piece(is_white){
 	}else{
 		face.y = 0;
 		face.x = 0;
-		x_index = 0;
+		x_index = 1;
 		y_index = 15;
 	}
 	piecevalue = 100;
@@ -203,6 +203,7 @@ bool King::initiate_move_to(int a, int b, Chess_Frame* all){
 		}else{
 			C = (all->army[1][15]->getX() - Ox)/64;
 			D = (all->army[1][15]->getY() - Oy)/64;
+			cout << "black king" << endl;
 		}
 		switch(I){
 			case -2:

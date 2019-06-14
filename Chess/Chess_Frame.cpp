@@ -426,18 +426,13 @@ void Server_handle(Server_Chess* Server_ptr, int client, string msg)
 	int y_index = Server_ptr->msg_handler.recv_y_index;
 	int a = Server_ptr->msg_handler.recv_toPixel_X;
 	int b = Server_ptr->msg_handler.recv_toPixel_Y;
-	cout << x_index << "-" << y_index << "-" << a << "-" << b;
+	cout << x_index << "-" << y_index << "-" << a << "-" << b << endl;
 	Server_ptr->army[x_index][y_index]->initiate_move_to(a, b, Server_ptr);
 }
 Server_Chess::Server_Chess() :Chess_Frame() {
 	server = new TcpServer("127.0.0.1", 54000, Server_handle, this);
 	if (server->Init()) { 
 		server->Connecting(); 
-/*		for (int i = 0; i<2; i++) {
-			for (int j = 0; j<16; j++) {
-				army[i][j]->is_online=true;
-			}
-		}*/
 	}
 	has_first_turn = true;
 	if (has_first_turn) row_index = 0;
@@ -526,7 +521,7 @@ void Client_handle(Client_Chess* Client_ptr, int client, string msg)
 	int y_index = Client_ptr->msg_handler.recv_y_index;
 	int a = Client_ptr->msg_handler.recv_toPixel_X;
 	int b = Client_ptr->msg_handler.recv_toPixel_Y;
-	cout << x_index << "-" << y_index << "-" << a << "-" << b;
+	cout << x_index << "-" << y_index << "-" << a << "-" << b << endl;
 	Client_ptr->army[x_index][y_index]->initiate_move_to(a, b, Client_ptr);
 }
 Client_Chess::Client_Chess() :Chess_Frame() {
@@ -560,17 +555,6 @@ Client_Chess::~Client_Chess() {
 
 void Client_Chess::handleEvent(SDL_Event &e)
 {
-	/*if (firstTime)
-	{
-		while(!client->RunNB());
-		cout << "First time";
-		firstTime = false;
-		player1_turn = false;
-	}*/
-/*	if (player1_turn && client->RunNB())
-	{
-		player1_turn = false;
-	}*/
 	int piece_type = 0;
 	if (!promoting_pawn) {	//if there is no pawn promotion, the game goes on as normal
 		if (player1_turn == has_first_turn) {
@@ -604,6 +588,7 @@ void Client_Chess::handleEvent(SDL_Event &e)
 		}
 		else {
 			MessageHandler temp;
+			cout << played_piece_x_index << endl;
 			MessageToBeSent = temp.encode(played_piece_x_index, played_piece_y_index, played_piece_toX, played_piece_toY);
 			client->Send(client->server, MessageToBeSent);
 			played_piece_x_index = -1;
@@ -627,13 +612,5 @@ void Client_Chess::handleEvent(SDL_Event &e)
 		else {
 			if (is_draw()) cout << "Stalemate. Draw\n";
 		}
-
-/*		if (player1_turn)
-		{
-			client->Send(client->server, MessageToBeSent);
-			/*client->RunNB();
-			player1_turn = false;
-			change_turn = true;
-		}*/
 	}
 }
