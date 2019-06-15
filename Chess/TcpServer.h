@@ -3,12 +3,14 @@
 #include <string>
 #include <iostream>
 #include "MessageHandler.h"
-#include "Chess_Frame.h"
+#include "Chess_Frame.h"	
 #include "NonBlockingRecv.h"
+#include <thread>
 
 class Server_Chess;
 #define MAX_BUFFER_SIZE (49152)
 class TcpServer;
+static void ListeningValue(TcpServer* ptrServer);
 //TODO: Callback to data received
 typedef void(*MessageReceivedHandler)(Server_Chess* Server_ptr, int socketID, std::string msg);
 
@@ -28,6 +30,8 @@ public:
 	void Run();
 	bool RunNB();
 	void Connecting();
+	void ConnectingWithThread();
+	bool WaitingForClient;
 	
 	//Receive Loop
 	//Send back message
